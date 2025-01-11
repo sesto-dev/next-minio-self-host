@@ -1,0 +1,26 @@
+{
+	"name": "Boot",
+	"short_name": "Boot",
+	"description": "پلتفرم هوش تجاری Boot",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#FCFCFC",
+	"theme_color": "#DEF81B",
+	"icons": [
+	  {
+		"src": "/icons/192.png",
+		"sizes": "192x192",
+		"type": "image/png"
+	  },
+	  {
+		"src": "/icons/512.png",
+		"sizes": "512x512",
+		"type": "image/png"
+	  },
+	  {
+		"src": "/icons/700.png",
+		"sizes": "700x700",
+		"type": "image/png"
+	  }
+	]
+  }

@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 99%;
+    --foreground: 20 51% 4%;
+    --muted: 67 60% 90%;
+    --muted-foreground: 20 7% 25%;
+    --popover: 20 66% 98%;
+    --popover-foreground: 20 51% 3%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 51% 3%;
+    --border: 20 15% 94%;
+    --input: 20 15% 94%;
+    --primary: 67 94% 54%;
+    --primary-foreground: 0 0% 12%;
+    --secondary: 20 12% 92%;
+    --secondary-foreground: 20 100% 32%;
+    --accent: 67 94% 54%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 67 94% 54%;
+    --radius: 0.5rem;
+    --chart-1: 67 94% 44%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 0 0% 0%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 67 94% 54%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
+  }
+
+  .dark {
+    --background: 0 0% 3%;
+    --foreground: 253 31% 98%;
+    --muted: 253 7% 13%;
+    --muted-foreground: 253 0% 63%;
+    --popover: 0 0% 1%;
+    --popover-foreground: 253 31% 98%;
+    --card: 0 0% 1%;
+    --card-foreground: 253 31% 99%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --primary: 67 94% 54%;
+    --primary-foreground: 0 0% 1%;
+    --secondary: 0 0% 9%;
+    --secondary-foreground: 253 7% 69%;
+    --accent: 67 94% 54%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 339.2 90.36% 51.18%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 67 94% 54%;
+    --chart-1: 67 94% 54;
+    --chart-2: 253 13% 74%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 67 94% 54%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 67 94% 54%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 253 91% 58%%;
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply box-border bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .min-h-screen {
+    min-height: 100vh; /* Fallback */
+    min-height: 100dvh;
+  }
+  .h-screen {
+    height: 100vh; /* Fallback */
+    height: 100dvh;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Add RTL specific overrides */
+[dir="rtl"] {
+  /* Reverse margins/paddings where needed */
+  .ml-auto {
+    margin-left: unset;
+    margin-right: auto;
+  }
+
+  .mr-auto {
+    margin-right: unset;
+    margin-left: auto;
+  }
+
+  /* Fix icons direction */
+  .chevron-icon {
+    transform: scaleX(-1);
+  }
+
+  /* Command specific RTL fixes */
+  .cmdk-input-wrapper svg {
+    margin-right: auto;
+    margin-left: 8px;
+  }
+
+  .cmdk-item svg {
+    margin-left: 8px;
+    margin-right: 0;
+  }
+
+  /* Popover specific RTL fixes */
+  .popover-content {
+    text-align: right;
+  }
+
+  /* Animation overrides for RTL */
+  .slide-in-from-left-2 {
+    --tw-translate-x: -0.5rem;
+  }
+
+  .slide-in-from-right-2 {
+    --tw-translate-x: 0.5rem;
+  }
+
+  /* Select specific RTL fixes */
+  .select-trigger {
+    text-align: right;
+  }
+
+  /* Fix dot placement in sentences */
+  .select-value::after {
+    content: ".";
+    margin-right: 0.25em;
+    margin-left: 0;
+  }
+
+  /* Remove original dot if it exists in text */
+  .select-value {
+    direction: rtl;
+  }
+}
+
+@layer base {
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply outline-none ring-0 ring-inset;
+  }
+}

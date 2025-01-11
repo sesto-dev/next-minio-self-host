@@ -1,0 +1,87 @@
+services:
+  frontend-app:
+    build:
+      context: ./frontend/app
+      dockerfile: Dockerfile
+    container_name: frontend-app
+    restart: always
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
+    labels:
+      traefik.enable: true
+      traefik.docker.network: traefik-public
+
+      traefik.http.routers.frontend-app-http.rule: Host(`${FRONTEND_APP_DOMAIN}`)
+      traefik.http.routers.frontend-app-http.entrypoints: http
+      traefik.http.routers.frontend-app-http.middlewares: https-redirect
+      traefik.http.routers.frontend-app-http.service: frontend-app-service
+
+      traefik.http.routers.frontend-app-https.rule: Host(`${FRONTEND_APP_DOMAIN}`)
+      traefik.http.routers.frontend-app-https.entrypoints: https
+      traefik.http.routers.frontend-app-https.tls: true
+      traefik.http.routers.frontend-app-https.tls.certresolver: le
+      traefik.http.routers.frontend-app-https.service: frontend-app-service
+
+      traefik.http.services.frontend-app-service.loadbalancer.server.port: 3000
+      traefik.http.middlewares.frontend-app-headers.headers.customrequestheaders.X-Forwarded-Proto: https
+    networks:
+      - traefik-public
+
+  minio:
+    image: minio/minio:RELEASE.2023-12-02T10-51-33Z-cpuv1
+    container_name: minio
+    command: server --console-address ":9001" /data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "127.0.0.1:${MINIO_API_PORT}:9000" # Bind to localhost
+      - "127.0.0.1:${MINIO_CONSOLE_PORT}:9001" # Bind to localhost
+    volumes:
+      - minio-data:/data
+    networks:
+      - traefik-public
+      - default
+    labels:
+      traefik.enable: true
+      traefik.docker.network: traefik-public
+
+      # API Endpoint
+      traefik.http.routers.minio-api.rule: Host(`${MINIO_DOMAIN}`)
+      traefik.http.routers.minio-api.entrypoints: http
+      traefik.http.routers.minio-api.middlewares: https-redirect
+      traefik.http.routers.minio-api.service: minio-api-service
+
+      traefik.http.routers.minio-api-secure.rule: Host(`${MINIO_DOMAIN}`)
+      traefik.http.routers.minio-api-secure.entrypoints: https
+      traefik.http.routers.minio-api-secure.tls: true
+      traefik.http.routers.minio-api-secure.tls.certresolver: le
+      traefik.http.routers.minio-api-secure.service: minio-api-service
+
+      traefik.http.services.minio-api-service.loadbalancer.server.port: 9000
+
+      # Console Endpoint
+      traefik.http.routers.minio-console.rule: Host(`${MINIO_CONSOLE_DOMAIN}`)
+      traefik.http.routers.minio-console.entrypoints: http
+      traefik.http.routers.minio-console.middlewares: https-redirect
+      traefik.http.routers.minio-console.service: minio-console-service
+
+      traefik.http.routers.minio-console-secure.rule: Host(`${MINIO_CONSOLE_DOMAIN}`)
+      traefik.http.routers.minio-console-secure.entrypoints: https
+      traefik.http.routers.minio-console-secure.tls: true
+      traefik.http.routers.minio-console-secure.tls.certresolver: le
+      traefik.http.routers.minio-console-secure.service: minio-console-service
+
+      traefik.http.services.minio-console-service.loadbalancer.server.port: 9001
+    restart: unless-stopped
+
+volumes:
+  minio-data:
+
+networks:
+  default:
+    driver: bridge
+  traefik-public:
+    external: true
