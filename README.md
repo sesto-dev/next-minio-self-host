@@ -1,83 +1,130 @@
-# MetaTrader 5 Docker API
+# Dockerized Full-Stack Application with Traefik and MinIO
 
-![Banner](https://github.com/user-attachments/assets/6b5101ea-275b-4ae4-8f65-6a4fc30f30bf)
-
-This project provides a Dockerized MetaTrader 5 environment with a Flask API for interacting with MT5 data. It uses Wine to run MetaTrader 5 on a Linux-based system and exposes API endpoints for retrieving symbol information.
+This project is a Dockerized full-stack application setup featuring a **frontend application** and **MinIO object storage**, managed with **Traefik** as a reverse proxy and TLS terminator. The setup is optimized for production environments with scalability, security, and ease of deployment in mind.
 
 ## Features
 
-- Dockerized MetaTrader 5 environment
-- Flask API for retrieving MT5 data
-- Prometheus metrics for monitoring
-- JSON logging for better log management
-- Health check endpoint
+- **Frontend Application**: A Node.js-based application running in production mode.
+- **MinIO**: High-performance object storage for file uploads and S3-compatible APIs.
+- **Traefik**: Acts as a reverse proxy, manages HTTPS certificates with Let's Encrypt, and enforces HTTPS.
+- **Environment Variables**: All sensitive configurations are stored in `.env` files for better security and flexibility.
+- **Volume Persistence**: Data stored in MinIO persists through container restarts via Docker volumes.
+- **Network Segmentation**: Containers communicate securely through isolated Docker networks.
+
+---
 
 ## Prerequisites
 
-- Docker
-- Docker Compose (optional, for easier management)
+- **Docker** and **Docker Compose** installed on your system.
+- A domain name for the frontend and MinIO endpoints.
+- Valid DNS records pointing to the server hosting the application.
 
-## Installation
+---
 
-Clone this repository:
+## Environment Variables
 
-```bash
-   git clone https://github.com/sesto-dev/docker-mt5-wine-vnc-python.git
-   cd docker-mt5-wine-vnc-python
+Define the following variables in a `.env` file in the root directory of your project:
+
+### General
+
+```env
+# Frontend App
+FRONTEND_APP_DOMAIN=example.com
+
+# MinIO
+MINIO_ROOT_USER=admin
+MINIO_ROOT_PASSWORD=33382244
+MINIO_API_PORT=9000
+MINIO_CONSOLE_PORT=9001
+
+# MinIO S3 Access
+MINIO_ENDPOINT=http://example.com
+MINIO_ACCESS_KEY=minio
+MINIO_SECRET_KEY=miniosecret
+MINIO_BUCKET_NAME=boot
+
+# Traefik
+MINIO_DOMAIN=minio.example.com
+MINIO_CONSOLE_DOMAIN=console.minio.example.com
 ```
 
-Build the Docker image using Docker Compose:
+## Services
 
-```bash
-docker compose up -d --build
-```
+1. Frontend Application
 
-## Usage
+   Built from the Dockerfile in ./frontend/app.
+   Accessible at http://${FRONTEND_APP_DOMAIN}.
+   Configured with Traefik for HTTPS and custom headers.
 
-Access the API endpoints:
+2. MinIO
 
-- Symbol information: http://localhost:5000/symbol_info/<symbol>
-- Health check: http://localhost:5000/health
-- Metrics: http://localhost:5000/metrics
+   Accessible via:
+   API: http://${MINIO_DOMAIN} or https://${MINIO_DOMAIN}.
+   Console: http://${MINIO_CONSOLE_DOMAIN} or https://${MINIO_CONSOLE_DOMAIN}.
+   Ports bound to localhost for security (127.0.0.1).
 
-## API Endpoints
+3. Traefik
 
-### Get Symbol Information
+   Manages routing and TLS for all services.
+   Automatically provisions and renews SSL certificates via Let's Encrypt.
 
-Returns information about the specified symbol.
-Example response:
-Health Check
-Returns the health status of the application.
+## Setup and Deployment
 
-### Metrics
+1. Clone the Repository
 
-Returns Prometheus metrics for monitoring.
+git clone https://github.com/your-repo/project-name.git
+cd project-name
 
-## Architecture
+2. Create .env File
 
-The project consists of two main components:
-MetaTrader 5 running in a Wine environment
-Flask API running on the host Linux system
-The Flask API communicates with MetaTrader 5 running in a Wine environment, which allows interaction between the Linux environment and the Windows-based MT5.
+Populate the .env file with the variables described above. 3. Start the Services
 
-## Development
+Run the following command to start all services:
 
-To modify the API or add new endpoints, edit the following files:
-Logging
-The application uses JSON logging for better log management. Logs can be found in the container at /var/log/mt5_setup.log.
+docker-compose up -d
 
-## Monitoring
+4. Verify the Deployment
 
-Prometheus metrics are available at the /metrics endpoint. You can use these metrics to monitor the application's performance and request counts.
+   Access the frontend at https://${FRONTEND_APP_DOMAIN}.
+    Access the MinIO API at https://${MINIO_DOMAIN}.
+   Access the MinIO console at https://${MINIO_CONSOLE_DOMAIN}.
 
-## License
+Persistent Data
 
-This project is licensed under the MIT License. See the LICENSE.md file for details.
+    MinIO: The minio-data volume ensures that your uploaded files persist even after container restarts.
+
+## Troubleshooting
+
+### Common Issues
+
+    Services Not Starting:
+        Check the logs using docker-compose logs.
+        Ensure your .env file is correctly configured.
+
+    SSL Certificate Errors:
+        Verify your DNS records and ensure the domains resolve to your server.
+
+    MinIO Access Denied:
+        Double-check MINIO_ACCESS_KEY and MINIO_SECRET_KEY.
+
+Debugging Commands
+
+    Restart a specific service:
+
+docker-compose restart <service_name>
+
+View service logs:
+
+    docker-compose logs -f <service_name>
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please follow the standard GitHub workflow:
 
-## Support
+Fork the repository.
+Create a feature branch.
+Submit a pull request with detailed information about your changes.
 
-If you encounter any problems or have any questions, please open an issue in the GitHub repository.
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.

@@ -43,6 +43,9 @@ export default function UploadForm() {
           toast.success("Files uploaded successfully");
           setFiles([]); // Clear files after successful upload
         });
+
+        // reload
+        window.location.reload();
       }
     } catch (error) {
       toast.error("Something went wrong");
