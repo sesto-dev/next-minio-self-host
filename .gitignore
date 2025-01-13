@@ -45,6 +45,7 @@ ENV/
 
 # Next.js
 .next/
+.velite/
 out/
 node_modules/
 .pnp/
