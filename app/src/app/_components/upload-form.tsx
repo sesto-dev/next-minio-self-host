@@ -72,7 +72,11 @@ export default function UploadForm() {
         onChange={handleFileChange}
       />
 
-      <Button type="submit" disabled={loading} className="w-full">
+      <Button
+        type="submit"
+        disabled={loading || files.length < 1}
+        className="w-full"
+      >
         {loading && <Loader2 className="mr-2 size-4 animate-spin" />}
         Upload
       </Button>
